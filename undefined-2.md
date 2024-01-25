@@ -98,6 +98,18 @@ docker push examplename/examplerepo
 
 
 
+## 도커 이미지 가져오기
+
+{% hint style="info" %}
+public으로 설정한 이미지는 누구나 사용 가능하기 때문에 login을 할 필요는 없다.
+{% endhint %}
+
+```bash
+docker pull [가입시이름]/[저장소이름]:tagname
+```
+
+
+
 ## 로컬 도커 로그아웃
 
 ```bash

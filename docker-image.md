@@ -86,3 +86,6 @@ docker image prune -a
 docker image prune -a -f
 ```
 
+{% hint style="info" %}
+만약 컨테이너에서 이미지를 사용중이라면 컨테이너를 삭제하고 이미지를 삭제할 수있다.
+{% endhint %}
