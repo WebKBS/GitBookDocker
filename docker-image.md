@@ -60,8 +60,10 @@ package.json파일은 npm install 시 매우 무겁기 때문에 캐싱기능을
 
 
 
+## 도커 이미지 정보 보기
 
+```bash
+docker image inspect [옵션] [이미지_이름 또는 이미지_ID]
+```
 
-
-
-사실 매번 새로 빌드하고 다시 publish를 하는 것은 매우 번거로운 일이다.
+해당 이미지의 상세 정보를  볼수 있다.
