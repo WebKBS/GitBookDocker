@@ -12,3 +12,4 @@
 * [이미지 공유하기](undefined-2.md)
 * [Docker Volume](docker-volume.md)
 * [Bind Mount](bind-mount.md)
+* [dockerignore](dockerignore.md)
