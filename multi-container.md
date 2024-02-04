@@ -20,3 +20,108 @@ description: 다중 컨테이너를 만들어보자!
 
 
 
+데이터베이스는 MongoDB를 사용.
+
+## 데이터베이스 컨테이너 만들기
+
+```bash
+docker run --name mongodb --rm -d -p 27017:27017 mongo
+```
+
+이 코드는 --rm 으로 컨테이너 중지시 mongodb의 컨테이너는 삭제된다.
+
+볼륨을 만들지 않았기때문에 데이터도 함께 삭제된다.
+
+\-p 옵션을 사용하여 mongodb의 포트를 만들고 이를 로컬에서 실행중인 node를 연결하여 로컬에서 사용할 수 있다.
+
+
+
+## Node js 컨테이너 만들기
+
+1. 도커 파일 생성
+
+```docker
+FROM node
+
+WORKDIR /app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 80
+
+CMD ["node", "app.js"]
+```
+
+2. 도커 이미지 만들기
+
+```bash
+docker build -t [이미지 이름] .
+```
+
+{% hint style="info" %}
+만약 사용하지 않는 이미지를 한번에 지우고 싶다면 아래 코드를 입력한다.
+
+```bash
+docker image prune -a
+```
+{% endhint %}
+
+3. 도커 컨테이너 만들기
+
+```bash
+docker run --name [이름] --rm -d -p 80:80 [이미지 이름]
+```
+
+포트 번호는 설정한데로 사용.
+
+{% hint style="warning" %}
+만약 컨테이너 실행에 에러(데이터베이스 연결 실패)가 발생한다면 node의 데이터베이스 연결할 코드에 url을 확인하자. localhost로 되어있다면 실패할 수도 있다. 앞서 설명한 이전 페이지 "네트워크 통신"에 적은 host.docker.internal을 사용하자.
+{% endhint %}
+
+
+
+## React 컨테이너 만들기.
+
+프론트엔드는 React로 설명.
+
+1. 도커 파일 생성
+
+```docker
+FROM node
+
+WORKDIR /app
+
+COPY package.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
+```
+
+2. 도커 이미지 생성
+
+```bash
+docker build -t [이미지 이름] .
+```
+
+3. 도커 컨테이너 생성
+
+```bash
+docker run --name [이름] --rm -d -p 3000:3000 [이미지 이름]
+```
+
+
+
+전체 도커 컨테이너 연결을 완료하였다.
+
+detach 모드로 실행했으며, docker logs \[컨테이너이름] 으로 실행중인 컨테이너의 로그를 확인할 수 있다.
