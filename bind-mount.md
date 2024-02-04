@@ -56,6 +56,7 @@ docker run -v /host/path:/container/path [이미지]
 docker run -v /host/path:/container/path -v /app/node_modules [이미지]
 # -v /app/node_modules로 node_modules 볼륨을 설정한다.
 # 이는 익명 볼륨이다.
+# /host/path는 실제 바인드 마운트 볼륨을 지정할 실제 최상위 루트 폴더
 ```
 
 \-v 볼륨 생성시 : 콜론을 사용하지 않았기 때문에(이름을 생성하지 않았기때문에) 익명볼륨이 생성된다.
