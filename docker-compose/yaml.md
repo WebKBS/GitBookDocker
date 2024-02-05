@@ -69,9 +69,9 @@ services에 위처럼 3가지가 있다면 컨테이너 종류가 3가지가 된
 
 ### sevices에서 컨테이너 설정
 
-데이터베이스 설정부터 해보자.
+## 데이터베이스 설정
 
-#### 이미지 설정
+### 이미지 설정
 
 ```yaml
 services:
@@ -79,7 +79,7 @@ services:
     image: "mongo" # 이미지의 이름이다.
 ```
 
-#### 볼륨 설정
+### 볼륨 설정
 
 ```yaml
 services:
@@ -149,5 +149,91 @@ services:
       - ./env/mongo.env
 volumes:
   data: 
+```
+
+위 데이터베이스 설정한 yaml 파일을 터미널로 변경하면 이렇게 된다.
+
+```bash
+docker run --name mongodb \ # 컨테이너 이름
+ --env-file ./env/mongo.env \ # 환경변수
+ -v data:/data/db # 볼륨 설정
+ --rm \ # 컨테이너 종료시 컨테이너 삭제
+ -d # 이 부분은 docker-compost up -d 실행시 적용 (*기본은 attach모드이다)
+ mongo # 이미지 이름
+```
+
+
+
+## 백엔드 설정
+
+### 이미지 만들기
+
+백엔드 설정시 image는 이름을 지정하지 않는다.
+
+mongo에서 지정한 mongo는 mongodb 자체 퍼블릭으로 공유한 데이터베이스 이기때문에 mongo를 사용했다.
+
+하지만 백엔드 사용시에는 image를 Dockerfile을 설정해줘야한다.
+
+여기선 image 대신 build 옵션을 사용한다.
+
+```yaml
+backend:
+  build: ./backend # 도커 파일이 있는 위치를 설정한다.
+```
+
+build 옵션에서는 Docker 파일이 있는 위치를 설정해야한다.
+
+만약 폴더 이름이 현재 루트의 backend 라면, ./backend를 설정해야한다.
+
+
+
+또 다른 방법이 있다.
+
+context 와 dockerfile 키를 사용하는 방법
+
+```yaml
+backend:
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
+```
+
+context는 Docker파일이 위치가 있는 곳을 지정하고 dockerfile은 말그대로 Dockerfile을 사용하겠다는 뜻이된다.
+
+여기서 중요한 점은 context 사용시 Dockerfile에서 COPY를 사용할 때 같은 경로가 일치해야 한다.
+
+```docker
+# Dockerfile
+# 만약 도커 파일이 ./backend를 사용하고 Dockerfile 내부에서 COPY . . 을 사용할때
+COPY . .
+```
+
+위 방법은 혹여나 Dockerfile이 다른 중첩 폴더에 있을때, 그 폴더를 엑세스해야하는 경우 context를 통해 다른 폴더 경로 지정으로 사용할 수 있다.
+
+build 키로 이미지를 만들 수 있다.
+
+위 코드를 터미널로 교체하면 아래와 같다.
+
+```bash
+docker build -t [이미지 이름] .
+```
+
+{% hint style="info" %}
+터미널에는 이미지 이름이 있어야 컨테이너를 서로 연결해 줄 수 있지만
+
+yaml 파일을 사용시, docker-compose 사용시에는 하나의 yaml 파일에 설정하여 통합하기 때문에
+
+build 옵션을 사용하고 이미지 이름은 따로 필요하지 않다. 익명 이름을 사용.
+{% endhint %}
+
+
+
+### 컨테이너 만들기
+
+#### 포트 지정
+
+```
+ports:
+    - '3000:3000'
 ```
 
