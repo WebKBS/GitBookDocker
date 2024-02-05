@@ -373,7 +373,97 @@ docker run --name backend \
 
 
 
+## 프론트엔드 설정
 
+### 이미지 만들기
 
+백엔드 설정과 같다.
 
+```yaml
+frontend:
+  build: ./frontend
+```
+
+### 컨테이너 만들기
+
+#### 포트 설정
+
+백엔드 설정과 같다. 사용할 포트를 적어주면 된다.
+
+```yaml
+frontend:
+  build: ./frontend
+  ports:
+    - '3000:3000'
+```
+
+#### 볼륨 설정
+
+백엔드와 설명은 같다.
+
+```yaml
+frontend:
+  build: ./frontend
+  ports:
+    - '3000:3000'
+  volumes:
+    - ./frontend/src:/app/src
+```
+
+#### 대화형 옵션
+
+프론트엔드에서는 대화형 옵션을 사용하기 위해 -it 옵션을 사용한다.
+
+\-it 옵션을 사용하기 위해 다음과 같은 키를 사용해야한다.
+
+1. stdin\_open: true    - 이는  -i 에 해당한다.
+2. tty: true     - 이는 -t에 해당한다.
+
+stdin\_open은 개방형 입력 연결이 필요하다는것을 도커에게 알리는 것이다.
+
+tty는 터미널에 연결하기 위함이다.
+
+위 두 옵션은 개방형 표준 입력을 위한 입력 플래그의 조합이다.
+
+아래와 같이 입력한다.
+
+```yaml
+frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend/src:/app/src
+    stdin_open: true
+    tty: true
+```
+
+#### depends\_on 설정
+
+프론트엔드와 백엔드를 동시에 서비스한다면 당연히 프론트엔드는 백엔드에 의존성이 있다. 그래서 depends\_on 설정을 해줘야한다. 이하 설명은 백엔드에서 설명한 백엔드와 데이터베이스 설명과 같다.
+
+```yaml
+frontend:
+  build: ./frontend
+  ports:
+    - '3000:3000'
+  volumes:
+    - ./frontend/src:/app/src
+  stdin_open: true
+  tty: true
+  depends_on:
+    - backend # 연결할 백엔드 컨테이너 이름
+```
+
+이제 프론트엔드 설정까지 완료되었다.
+
+위 프론트엔트 코드를 터미널로 작성하면 이렇게 된다.
+
+```bash
+docker run --name frontend \ 
+    -v /절대경로/frontend/src:/app/src \
+    -p 3000:3000
+    -it \
+    [이미지 이름]
+```
 
