@@ -230,10 +230,150 @@ build 옵션을 사용하고 이미지 이름은 따로 필요하지 않다. 익
 
 ### 컨테이너 만들기
 
-#### 포트 지정
+#### 포트 설정
 
+```yaml
+backend:
+  build: ./backend
+  ports:
+    - '80:80' # 백엔드에서 설정한 포트와 일치시킨다.
 ```
-ports:
-    - '3000:3000'
+
+포트는 위와같이 ports: 를 사용하고 아래 " - " 하이픈을 사용한다.
+
+만약 백엔드 포트가 80이라면 80으로 설정해준다.
+
+#### 볼륨 지정은 개별로 설정할 수 있지만, 데이터베이스, 백엔드, 프론트엔드 모두 통합으로 작성할것이라서 가장 아래 network 설정을 해주면된다. 차후 설명.
+
+#### 볼륨 설정
+
+```yaml
+backend:
+  build: ./backend
+  ports:
+    - '80:80' 
+  volumes:
+    - logs:/app/logs # 볼륨 설정은 자유다. 만약 로그를 남기고 싶다면 이와 같이 만들면 된다.
 ```
+
+만약 로그 데이터를 삭제하지 않고 보관하고 싶을땐 위와같이 볼륨을 설정하면 된다.
+
+logs 라는 이름있는 볼륨이 생성된다.
+
+단 이름 있는 볼륨은 최상위 volume 키에도 추가해야한다.
+
+```yaml
+backend:
+  build: ./backend
+  ports:
+    - '80:80' 
+  volumes:
+    - logs:/app/logs 
+
+volumes: 
+  data:
+  logs: 
+```
+
+data: 는 데이터베이스에서 설정한 네임 볼륨
+
+
+
+#### 바인드 마운트
+
+바인드  마운트를 하기 위해선 로컬 컴퓨터 내의 완전한 전체 절대 경로가 필요했다.
+
+하지만 yaml 파일에서는 그럴 필요가 없다.
+
+yaml 파일이 위치한 곳이 최상위 root 폴더라면 그 위치부터 상대 경로를 사용한다.
+
+```yaml
+backend:
+  build: ./backend
+  ports:
+    - '80:80' 
+  volumes:
+    - logs:/app/logs
+    - ./backend:/app
+    - /app/node_modules # 바인드 마운트 사용시 필요함.
+
+volumes: 
+  data:
+  logs: 
+```
+
+만약 폴더이름이 backend 이면 위 처럼 사용을 한다. yaml 파일과 같은 경로인 ./ 를 사용해서 backend 폴더의 app 폴더를 의미한다.
+
+logs의 네임 볼륨은 최상위 volumes의 키에 추가를 해야했지만
+
+바인드 마운트는 최상위 volumes 키에 추가할 필요가 없다.
+
+바인드 마운트 사용시 개발환경에서 실시간으로 변경사항을 반영하기위해 /app/node\_modules를 추가해줘야한다.
+
+#### 환경변수 설정
+
+환경 변수 설정은 데이터베이스의 환경설정 파일을 가져와서 사용하는 방법과 같다.
+
+```yaml
+backend:
+  build: ./backend
+  ports:
+    - '80:80' 
+  volumes:
+    - logs:/app/logs
+    - ./backend:/app
+    - /app/node_modules # 바인드 마운트 사용시 필요함.
+  env_file:
+    - ./env/backend.env
+
+volumes: 
+  data:
+  logs: 
+```
+
+
+
+#### depends\_on 설정
+
+depends\_on 은 터미널에서 docker run 실행시 없는 옵션이다. 도커 컴포즈에만 있는 옵션.
+
+이를 사용하는 이유는 하나의 yaml 파일에서 의존하고 있는 여러 컨테이너가 있기때문에 이를 의존성을 연결하기 위해 사용한다.
+
+앞서 데이터베이스 mongo db설정을 먼저하고 데이터베이스가 먼저 생성 된 후에 백엔드 컨테이너를 생성하기 때문에 의존하고 있는 데이터베이스의 컨테이너 이름을 추가하면 된다.
+
+```yaml
+backend:
+  build: ./backend
+  ports:
+    - '80:80' 
+  volumes:
+    - logs:/app/logs
+    - ./backend:/app
+    - /app/node_modules
+  env_file:
+    - ./env/backend.env
+  depends_on: 
+    - mongodb # 데이터베이스 컨테이너 이름을 사용한다.
+```
+
+이로 인해 백엔드 컨테이너 설정은 끝났다.
+
+이를 터미널로 작성하면 다음과 같다.
+
+```bash
+docker run --name backend \
+    -p 80:80
+    --env_file ./env/backend.env
+    -v logs:/app/logs
+    -v /절대경로 바인드마운트 경로/app
+    -v /app/node_modules
+    --rm
+    [이미지이름]
+```
+
+
+
+
+
+
 
