@@ -99,6 +99,27 @@ volume은 여러개가 될수 있기 때문에 " - " 기호로 정의한다.
 
 
 
+다른 컨테이너와 같은 볼륨을 공유하기 위해선 가장 아래 volumes를 설정해야한다.
+
+그리고 mongodb의 볼륨은 이름이 있기 때문에 이름을 설정해줘야한다.
+
+```yaml
+services:
+  mongodb:
+    image: "mongo"
+    volumes:
+      - "data:/data/db" # [볼륨 이름]:/[경로]
+    environment:
+      
+  backend:
+  frontend: 
+
+volumes: 
+  data: #네임 볼륨 지정해야함
+```
+
+
+
 environment 환경변수 설정.
 
 터미널에서 -e 부분과 같다. 이전 터미널에서 mongodb의 MONGO\_INITDB\_ROOT\_USERNAME
