@@ -69,14 +69,14 @@ services에 위처럼 3가지가 있다면 컨테이너 종류가 3가지가 된
 
 ### sevices에서 컨테이너 설정
 
+데이터베이스 설정부터 해보자.
+
 #### 이미지 설정
 
 ```yaml
 services:
   mongodb:
     image: "mongo" # 이미지의 이름이다.
-  backend:
-  frontend: 
 ```
 
 #### 볼륨 설정
@@ -87,10 +87,6 @@ services:
     image: "mongo"
     volumes:
       - "data:/data/db" # [볼륨 이름]:/[경로]
-    environment:
-      
-  backend:
-  frontend: 
 ```
 
 터미널에서 -v 를 사용해서 volume을 사용하는것과 동일하다.
@@ -109,10 +105,6 @@ services:
     image: "mongo"
     volumes:
       - "data:/data/db" # [볼륨 이름]:/[경로]
-    environment:
-      
-  backend:
-  frontend: 
 
 volumes: 
   data: #네임 볼륨 지정해야함
@@ -141,5 +133,21 @@ environment를 대신해서 env\_file 을 사용할 수 있다.
 ```yaml
 env_file:
   - ./env/mongo.env
+```
+
+
+
+데이터 베이스 설정시 최종 yaml 파일
+
+```yaml
+services:
+  mongodb:
+    image: 'mongo'
+    volumes:
+      - 'data:/data/db'
+    env_file:
+      - ./env/mongo.env
+volumes:
+  data: 
 ```
 
