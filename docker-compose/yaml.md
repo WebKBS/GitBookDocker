@@ -467,3 +467,48 @@ docker run --name frontend \
     [이미지 이름]
 ```
 
+
+
+## 최종 적인 파일은 이렇다.&#x20;
+
+위 내용을 전체 작성을 하면 다음과 같다. 연습용이니 참고만..
+
+```yaml
+services:
+  mongodb:
+    image: 'mongo'
+    volumes:
+      - 'data:/data/db'
+    env_file:
+      - ./env/mongo.env
+  backend:
+    build: ./backend
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules # 바인드 마운트 사용시 필요함.
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend/src:/app/src
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+
+volumes:
+  data:
+  logs:
+```
