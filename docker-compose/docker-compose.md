@@ -70,3 +70,16 @@ docker-compose down -v
 
 
 
+## 이미지 re-build 하기
+
+```bash
+docker-compose up --build
+```
+
+도커 이미지를 모두 리빌드한다.
+
+예시로)
+
+이미 이미지가 모두 실행되고 컨테이너 실행시  프론트 package.json 버전이 낮아서 버전을 다시 변경후 이미지를 다시 빌드해야 할때가 있다.&#x20;
+
+이럴때 이미 빌드된 이미지를 전체 삭제하고 다시 compose up을 하는 대신 즉시 다시 리 빌드할 때 사용된다.
