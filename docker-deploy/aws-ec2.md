@@ -34,3 +34,5 @@ Quick Start에서 Linux를 선택하고 프리티어 중 위 AMI 옵션을 선�
 Docker 연습이라 AWS 인스턴스 생성은 간단하게 넘어간다.
 {% endhint %}
 
+적절히 SSH 설정을하고 터미널에서 aws 리눅스로 접속을한다.
+
