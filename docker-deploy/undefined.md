@@ -14,6 +14,14 @@
 
 {% hint style="info" %}
 .dockerignore 파일이 없다면 생성해서 도커 허브 저장소에 업로드 되는것을 제외하자. public이므로 누구나 이미지를 받아 갈수 있으니 주의!
+
+```ignore
+node_modules
+Dockerfile
+*.pem
+```
+
+.pem 파일 특히 주의!
 {% endhint %}
 
 ## docker 이미지 생성
